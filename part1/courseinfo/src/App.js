@@ -36,12 +36,31 @@ const App = () => {
     //Le pasamos la copia modificada al array original con la función setPoints()
     setPoints(pointsCopy)
   }
+  const mostVotes = () => {
+    let maxVotes = 0
+    let posArray = 0
+    for (let i = 0; i < points.length; i++) {
+      if (points[i]>maxVotes) {
+        maxVotes = points[i]
+        posArray = i
+      } 
+    }
+    return anecdotes[posArray]
+    /**Version simplificada
+    let maxVotes = Math.max(...points)
+    let posArray = points.indexOf(maxVotes)
+    return anecdotes[posArray]
+    */
+  }
+
    return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <Button handleClick = {nextAnecdote} text = {"next anecdote"}/>
       <Button handleClick = {vote} text = {"vote"}/>
-
+      <h1>Anecdote whith most votes</h1>
+      <p>{mostVotes()}</p>
     </div>
   )
 }
