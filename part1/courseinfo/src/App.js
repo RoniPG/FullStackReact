@@ -1,62 +1,37 @@
 import { useState } from 'react'
-const StatisticsLine = (props) => {
-  return (
-    <tbody>
-    <tr><td>{props.text}</td><td>{props.value}</td></tr>
-    </tbody>
-  )
-}
-const Statistics = (props) => {
-  if ((props.good+props.neutral+props.bad) === 0) {
-    return <p>No feedback given</p>
-  } else {
-    return (
-      <div>
-        <table>
-          <StatisticsLine text = {"good"} value = {props.good} />
-          <StatisticsLine text = {"neutral"} value = {props.neutral} />
-          <StatisticsLine text = {"bad"} value = {props.bad} />
-          <StatisticsLine text = {"all"} value = {props.good + props.neutral + props.bad} />
-          <StatisticsLine text = {"average"} value = {((props.good *1) + (props.neutral * 0) + (props.bad * (-1))) / (props.good + props.neutral + props.bad)+" %"}/>
-          <StatisticsLine text = {"positive"} value = {props.good * 100 / (props.good + props.neutral + props.bad)} />
-        </table>
-      </div>
-    )
-  }
-}
-
 const Button = (props) => {
   return (
     <button onClick={props.handleClick}>{props.text}</button>
   )
 }
-
 const App = () => {
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+   
+  const [selected, setSelected] = useState(0)
 
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-
-  const handleClickGood = () => {
-    setGood(good +1)
+  const randomAnecdotes = () => {
+    return Math.floor(Math.random()*anecdotes.length)
   }
-  
-  const handleClickNeutral = () => {
-    setNeutral(neutral +1)
-  }
-  
-  const handleClickBad = () => {
-    setBad(bad +1)
+  const handleClick = () => {
+    return (
+      setSelected(randomAnecdotes())
+    )
   }
   return (
     <div>
-      <h1>give feedback</h1>
-      <Button handleClick = {handleClickGood} text = {"good"}/>
-      <Button handleClick = {handleClickNeutral} text = {"neutral"}/>
-      <Button handleClick = {handleClickBad} text = {"bad"}/>
-      <h1>statistics</h1>
-      <Statistics good = {good} neutral = {neutral} bad = {bad}/>
-      </div>
+      <p>{anecdotes[selected]}</p>
+      <Button handleClick = {handleClick} text = {"next anecdote"}/>
+    </div>
   )
 }
+
 export default App
