@@ -14,22 +14,34 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
+  
   ]
-   
   const [selected, setSelected] = useState(0)
+  // Creamos un State que almacena un array donde almacenaremos los puntos, de cada anecdota
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0))
 
   const randomAnecdotes = () => {
     return Math.floor(Math.random()*anecdotes.length)
   }
-  const handleClick = () => {
+  const nextAnecdote = () => {
     return (
       setSelected(randomAnecdotes())
     )
   }
-  return (
+  const vote = () => {
+    // Creamos una copia del array del state para modificarlo 
+    const pointsCopy = [...points]
+    //Modificamos la copia en la posicion de la anecdota
+    pointsCopy[selected] +=1
+    //Le pasamos la copia modificada al array original con la función setPoints()
+    setPoints(pointsCopy)
+  }
+   return (
     <div>
       <p>{anecdotes[selected]}</p>
-      <Button handleClick = {handleClick} text = {"next anecdote"}/>
+      <Button handleClick = {nextAnecdote} text = {"next anecdote"}/>
+      <Button handleClick = {vote} text = {"vote"}/>
+
     </div>
   )
 }
