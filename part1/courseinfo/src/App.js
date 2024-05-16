@@ -1,3 +1,4 @@
+
 const Course = (props) =>{
   return (
     <div>
@@ -58,14 +59,38 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
+      
     ]
   }
-
+  /** Version larga...
+  // Creamos una función que sume los ejericicios
+  const sumTotal = () => {
+    let total = 0
+    for (let i = 0; i < course.parts.length; i++) {
+      total = total + course.parts[i].exercises
+      console.log("total = ", total);
+    }
+    return total
+  }
+  // Asignamos la función a una variable para luego llamarla desde el return
+  const total = sumTotal()
+ */
+  
+  //Versión corta...
+  const total = course.parts.reduce(function(sum, part){
+    return sum + part.exercises
+  },0)
 
   return (
     <div>
       <Course course = {course}/>
+      <p><strong>total of {total} exercises</strong></p>
     </div>
   )
 }
