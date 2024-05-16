@@ -1,53 +1,63 @@
+const Course = (props) =>{
+  return (
+    <div>
+      <Header name={props.course.name}/>
+      <Content parts={props.course.parts} />
+    </div>
+  )
+}
+
 //const Header = ({course}) => <h1>{course}</h1>
 const Header = (props) => {
   //console.log(props)
-  return<h1>{props.course.name}</h1>
+  return<h1>{props.name}</h1>
 }
 
 //const Content = ({part},{exercises}) => <p>{part},{exercises}</p>
 const Content = (props) => {
- //console.log(props)
+//console.log(props.parts)
   return (
     <div>
-      {props.course.parts[0].name}{props.course.parts[0].exercises}<br/>
-      {props.course.parts[1].name}{props.course.parts[1].exercises}<br/>
-      {props.course.parts[2].name}{props.course.parts[2].exercises}<br/> {/** //-->Este <br/> puede que no haga falta*/}
+      {props.parts.map((part) => {
+        return (
+          <div key = {part.id}> 
+            <Part name = {part.name} exercises= {part.exercises} />
+          </div>
+        )
+      })}
+      {/**<Part name = {props.parts[0].name} exercises ={props.parts[0].exercises}/>
+      <Part name = {props.parts[1].name} exercises ={props.parts[1].exercises}/>
+      <Part name = {props.parts[2].name} exercises ={props.parts[2].exercises}/>*/}
     </div>
   )
 }
 
-//To implement
-
-/**const Content = (props) => {
+const Part = (props) => {
   return (
     <div>
-      <Part .../>
-      <Part .../>
-      <Part .../>
+      {props.name} {props.exercises}
     </div>
   )
-}*/
-
-//To implement: shortest version
-
-const Total = (props) => {
-  return <p>Number of exercises {props.course.parts[0].exercises}+{props.course.parts[1].exercises}+{props.course.parts[2].exercises}</p>
 }
 const App = () => {
   const course = {
     name: 'Half Stack application development',
+    id: 1,
     parts: [
       {
         name: 'Fundamentals of React',
-        exercises: 10
+        exercises: 10,
+        id: 1
       },
       {
         name: 'Using props to pass data',
-        exercises: 7
+        exercises: 7,
+        id: 2
       },
       {
         name: 'State of a component',
-        exercises: 14
+        exercises: 14,
+        id: 3
       }
     ]
   }
@@ -55,11 +65,10 @@ const App = () => {
 
   return (
     <div>
-      <Header course={course}/>
-      <Content course={course} />
-      <Total course={course} />
+      <Course course = {course}/>
     </div>
   )
 }
 
 export default App
+  
