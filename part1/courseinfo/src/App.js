@@ -68,7 +68,7 @@ const App = () => {
       
     ]
   }
-  /** Version larga...
+  /** Version con for...
   // Creamos una función que sume los ejericicios
   const sumTotal = () => {
     let total = 0
@@ -82,10 +82,14 @@ const App = () => {
   const total = sumTotal()
  */
   
-  //Versión corta...
+  //Versión con reduce...
   const total = course.parts.reduce(function(sum, part){
+    console.log("What is happening", sum, part.exercises);
     return sum + part.exercises
   },0)
+  //Versión con reduce aún mas corto....
+  //const total = course.parts.reduce((s, p) => s + p.exercises)
+  
 
   return (
     <div>
