@@ -1,28 +1,51 @@
 
 const Course = (props) =>{
+  //console.log("Course",props.courses);
   return (
     <div>
-      <Header name={props.course.name}/>
-      <Content parts={props.course.parts} />
+      {props.courses.map((course) => {
+        return (
+          <div key = {course.id}>
+             {/**console.log(course.name)*/}
+            <Header name = {course.name}/>
+            {/**console.log("Course",course.parts)*/}
+            <Content parts = {course.parts}/>
+            <p><strong>total of {
+            course.parts.reduce((s, p) => s + p.exercises,0)
+            } exercises</strong></p>
+          </div>
+        )
+      })}
+      {/**<Header courses={props.courses}/>
+      <Content courses={props.courses} />*/}
     </div>
   )
 }
 
 //const Header = ({course}) => <h1>{course}</h1>
 const Header = (props) => {
-  //console.log(props)
-  return<h1>{props.name}</h1>
+  //console.log("Header",props)
+  return (
+    <div >
+      <h1>
+        {/**console.log(props.name)*/}
+        {props.name}
+      </h1>
+    </div>
+  )
+    
 }
 
 //const Content = ({part},{exercises}) => <p>{part},{exercises}</p>
 const Content = (props) => {
-//console.log(props.parts)
+//console.log(props)
   return (
     <div>
-      {props.parts.map((part) => {
+      {props.parts.map ((part,index) => {
         return (
-          <div key = {part.id}> 
-            <Part name = {part.name} exercises= {part.exercises} />
+          <div key = {index + "." +part.id}> 
+            {/**console.log(part)*/}
+            <Part part = {part}/>
           </div>
         )
       })}
@@ -34,40 +57,58 @@ const Content = (props) => {
 }
 
 const Part = (props) => {
+  //console.log(props);
   return (
     <div>
-      {props.name} {props.exercises}
+      {props.part.name} {props.part.exercises}
     </div>
   )
 }
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    id: 1,
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 3
-      },
-      {
-        name: 'Redux',
-        exercises: 11,
-        id: 4
-      }
-      
-    ]
-  }
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
   /** Version con for...
   // Creamos una función que sume los ejericicios
   const sumTotal = () => {
@@ -83,18 +124,17 @@ const App = () => {
  */
   
   //Versión con reduce...
-  const total = course.parts.reduce(function(sum, part){
+    /**const total = courses.parts.reduce(function(sum, part){
     console.log("What is happening", sum, part.exercises);
     return sum + part.exercises
-  },0)
+  },0)*/
   //Versión con reduce aún mas corto....
   //const total = course.parts.reduce((s, p) => s + p.exercises)
   
 
   return (
     <div>
-      <Course course = {course}/>
-      <p><strong>total of {total} exercises</strong></p>
+      <Course courses = {courses}/>
     </div>
   )
 }
