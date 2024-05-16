@@ -14,9 +14,33 @@ const App = () => {
     const personToAddToState = {
       name: newName
     }
-    setPersons(persons.concat(personToAddToState))
+    //Version corta...
+    const is = persons.some((person) => {
+      return person.name === newName
+    })
+    //console.log(is);
+    if (is) {
+      alert(`${personToAddToState.name} is already added to phonebook`)
+    } else {
+      setPersons(persons.concat(personToAddToState))
+    }
     setNewName("")
-  
+    //console.log("Añadiremos a:" ,personToAddToState.names
+    
+    //Version larga...
+    /**let flag = false
+    for (let i = 0; i < persons.length; i++) {
+      if(persons[i].name === personToAddToState.name) flag=true    
+    } 
+    if (flag) {
+      alert(`${personToAddToState.name} is already added to phonebook`)
+      setNewName("")
+      flag=false
+    } else {
+      setPersons(persons.concat(personToAddToState))
+      setNewName("")
+    }
+    */   
   }
   return (
     <div>
