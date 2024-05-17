@@ -2,12 +2,27 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number:"040-1231244"}
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
+  const [filter, setFilter] = useState("")
+  const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
 
+  //TODO: Aplicar una lógica de filtros en donde se tenga en cuenta que los caracteres introducidos puedan estar
+  //      en cualquier posición dentro del array.name. Ya que en esta solución tiene encuenta el que el string
+  //      coincida exactamente con una parte del array.name. Ej : pera --> er, per, pe, era, ra, etc..
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value)
+    console.log(event.target.value);
+    const PersonFiltered = persons.filter((person) => 
+      person.name.toLowerCase().includes(event.target.value.toLowerCase()))
+    setFilteredPersons(PersonFiltered) // ---> No me queda claro que sea correcto esta línea
+  }
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -54,6 +69,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
         <div>
+          filter shown with<input onChange={handleFilterChange} value={filter}/>
+        </div>
+        <h2>add a new</h2>
+        <div>
           name: <input type='text' onChange={handleNameChange} value={newName}/>
         </div>
         <div>
@@ -64,7 +83,11 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => <div key={person.name}>{person.name} {person.number}</div>)}
+        <div>
+          {
+          filteredPersons.map((person) => <div key={person.name}>{person.name} {person.number}</div>)
+          }        
+        </div>
     </div>
   )
 
