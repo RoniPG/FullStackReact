@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 const Filter = (props) => {
   return (
@@ -25,7 +26,18 @@ const PersonForm = (props) => {
   )
 }
 const Persons = (props) => {
-  console.log(props);
+  console.log("props.filteredPersons", props.filteredPersons);
+  console.log("props.persons: ", props.persons);
+  if (props.contenido === 0){
+    console.log("hola mundo");
+    return (
+      <div>
+        { 
+          props.persons.map((person) => <div key={person.name}>{person.name} {person.number}</div>)
+        }        
+     </div>
+    )
+  }
   return (
     <div>
       { 
@@ -34,17 +46,21 @@ const Persons = (props) => {
    </div>
   )
 }
+
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
+  
+  useEffect (() => {
+    axios.get("http://localhost:3001/persons")
+    .then((response =>{
+      setPersons((prevpersons) => prevpersons.concat(response.data))
+    }))
+  }, [])
 
   //TODO: Aplicar una lógica de filtros en donde se tenga en cuenta que los caracteres introducidos puedan estar
   //      en cualquier posición dentro del array.name. Ya que en esta solución tiene encuenta el que el string
@@ -111,7 +127,7 @@ const App = () => {
         <PersonForm handleSubmit={handleSubmit} handleNameChange={handleNameChange} newName={newName}
                     handleNumberChange={handleNumberChange} newNumber={newNumber}/>
       <h2>Numbers</h2>
-        <Persons filteredPersons={filteredPersons} persons={persons}/>
+        <Persons filteredPersons={filteredPersons} persons={persons} contenido={filteredPersons.length}/>
     </div>
   )
 
