@@ -1,5 +1,6 @@
-import axios from 'axios'
+
 import { useEffect, useState } from 'react'
+import { addPerson, getAll } from './services/serverController'
 
 const Filter = (props) => {
   return (
@@ -26,13 +27,15 @@ const PersonForm = (props) => {
   )
 }
 const Persons = (props) => {
+  // console.log("Componente Persons con props.persons: ", props.persons);
+  // console.log("Componente Persons con props.filterdPERSONS: ", props.filteredPersons);
   if (props.contenido === 0 && props.filter ===""){
     return (
       <div>
         { 
           props.persons.map((person) => 
           <div 
-          key={person.name}>{person.name} {person.number} <button>delete</button>
+          key={person.id}>{person.name} {person.number} <button>delete</button>
           </div>)
         }        
      </div>
@@ -43,7 +46,7 @@ const Persons = (props) => {
       { 
         props.filteredPersons.map((person) => 
         <div 
-          key={person.name}>{person.name} {person.number} <button>delete</button>
+          key={person.id}>{person.name} {person.number} <button>delete</button>
         </div>)
       }        
    </div>
@@ -52,23 +55,21 @@ const Persons = (props) => {
 
 
 const App = () => {
-  console.log("Al principio de la APP");
+  //console.log("Al principio de la APP");
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
-  console.log("Valor de persons" , persons);
-  console.log("Valor de filteredPersons" , filteredPersons);
+  //console.log("Valor de persons" , persons);
+  //console.log("Valor de filteredPersons" , filteredPersons);
   //Con axios...
   useEffect (() => {
-    console.log("Al principio de useEffect");
-    axios.get("http://localhost:3001/persons")
-    .then((response =>{
-      console.log("dentro del .then")
-      setPersons((prevpersons) => prevpersons.concat(response.data))
-      console.log("seteando las personas");
-    }))
+    getAll()
+    .then(initialPersons => {
+      setPersons(initialPersons)
+    })
+      // console.log("seteando las personas");
   }, [])
 
   /**
@@ -104,7 +105,7 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const personToAddToState = {
+    const personToAdd= {
       name: newName,
       number: newNumber
     }
@@ -114,7 +115,7 @@ const App = () => {
     })
     //console.log(is);
     if (is) {
-      alert(`${personToAddToState.name} is already added to phonebook`)
+      alert(`${personToAdd.name} is already added to phonebook`)
     } else if (newName === "" || newNumber ==="") {
       if (newName ==="") {
         alert("The name can't be empty")
@@ -123,15 +124,17 @@ const App = () => {
       }
 
     } else {
-      axios
-        .post("http://localhost:3001/persons", personToAddToState)
-        .then(response => {
-         //console.log(response);
-         setPersons(persons.concat(response.data))
+      addPerson(personToAdd)
+        .then(returnedPerson => {
+         //console.log("returnedPerson: ",returnedPerson);
+         setPersons(persons.concat(returnedPerson))
+         setFilteredPersons(persons.concat(returnedPerson))
         })      
     }
+    //console.log("person despues del add: ",persons);
     setNewName("")
     setNewNumber("")
+    
     //console.log("Añadiremos a:" ,personToAddToState.names
     
     //Version larga...
