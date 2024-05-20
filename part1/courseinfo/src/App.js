@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react'
-import { addPerson, getAll } from './services/serverController'
+import { addPerson, getAll, deletePerson } from './services/serverController'
 
 const Filter = (props) => {
   return (
@@ -34,8 +34,8 @@ const Persons = (props) => {
       <div>
         { 
           props.persons.map((person) => 
-          <div 
-          key={person.id}>{person.name} {person.number} <button>delete</button>
+          <div key={person.id}> {person.name} {person.number} 
+          <button id ={person.id} onClick={props.handleButton}> delete </button>
           </div>)
         }        
      </div>
@@ -45,8 +45,8 @@ const Persons = (props) => {
     <div>
       { 
         props.filteredPersons.map((person) => 
-        <div 
-          key={person.id}>{person.name} {person.number} <button>delete</button>
+        <div key={person.id}> {person.name} {person.number}
+        <button id ={person.id} onClick={props.handleButton}> delete </button>
         </div>)
       }        
    </div>
@@ -63,11 +63,14 @@ const App = () => {
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
   //console.log("Valor de persons" , persons);
   //console.log("Valor de filteredPersons" , filteredPersons);
+ 
   //Con axios...
   useEffect (() => {
+    // console.log("Me ejecuto");
     getAll()
     .then(initialPersons => {
-      setPersons(initialPersons)
+      // console.log(initialPersons);
+      setPersons(persons => persons.concat(initialPersons))
     })
       // console.log("seteando las personas");
   }, [])
@@ -110,11 +113,11 @@ const App = () => {
       number: newNumber
     }
     //Version corta...
-    const is = persons.some((person) => {
+    const yes = persons.some((person) => {
       return person.name === newName
     })
-    //console.log(is);
-    if (is) {
+    //console.log(yes);
+    if (yes) {
       alert(`${personToAdd.name} is already added to phonebook`)
     } else if (newName === "" || newNumber ==="") {
       if (newName ==="") {
@@ -152,7 +155,27 @@ const App = () => {
     }
     */   
   }
-  
+  const handleButton = (event) => {
+    // console.log(event.target.id);
+    const personName = persons.find(person => person.id === event.target.id)
+    const confirm = window.confirm(`Delete ${personName.name}`)
+    if (confirm) {
+      deletePerson(`/${event.target.id}`)
+      getAll()
+      .then(initialPersons => {
+      //console.log("initialPersons", initialPersons);
+      setFilteredPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
+      setPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
+    })
+    }
+    // getAll()
+    // .then(returned =>  {
+    //   console.log(returned);
+    //   setFilteredPersons(returned)
+    //   setPersons(returned)
+    // })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -162,7 +185,8 @@ const App = () => {
         <PersonForm handleSubmit={handleSubmit} handleNameChange={handleNameChange} newName={newName}
                     handleNumberChange={handleNumberChange} newNumber={newNumber}/>
       <h2>Numbers</h2>
-        <Persons filteredPersons={filteredPersons} persons={persons} contenido={filteredPersons.length} filter={filter}/>
+        <Persons filteredPersons={filteredPersons} persons={persons} contenido={filteredPersons.length} 
+        filter={filter} handleButton={handleButton}/>
     </div>
   )
 
