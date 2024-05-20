@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react'
-import { addPerson, getAll, deletePerson } from './services/serverController'
+import { addPerson, deletePerson, getAll, updatePerson } from './services/serverController'
+import axios, { Axios } from 'axios'
 
 const Filter = (props) => {
   return (
@@ -34,8 +35,9 @@ const Persons = (props) => {
       <div>
         { 
           props.persons.map((person) => 
-          <div key={person.id}> {person.name} {person.number} 
-          <button id ={person.id} onClick={props.handleButton}> delete </button>
+          <div 
+          key={person.id}>{person.name} {person.number} 
+          <button id={person.id} onClick={props.handleButton}>delete</button>
           </div>)
         }        
      </div>
@@ -45,27 +47,29 @@ const Persons = (props) => {
     <div>
       { 
         props.filteredPersons.map((person) => 
-        <div key={person.id}> {person.name} {person.number}
-        <button id ={person.id} onClick={props.handleButton}> delete </button>
+        <div 
+          key={person.id}>{person.name} {person.number} 
+          <button id={person.id} onClick={props.handleButton}>delete</button>
         </div>)
       }        
-   </div>
+    </div>
   )
 }
 
 
 const App = () => {
-  //console.log("Al principio de la APP");
+  // console.log("Al principio de la APP");
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
-  //console.log("Valor de persons" , persons);
-  //console.log("Valor de filteredPersons" , filteredPersons);
- 
+  // console.log("Valor de persons" , persons);
+  // console.log("Valor de filteredPersons" , filteredPersons);
+  
+  
   //Con axios...
-  useEffect (() => {
+     useEffect (() => {
     // console.log("Me ejecuto");
     getAll()
     .then(initialPersons => {
@@ -73,8 +77,7 @@ const App = () => {
       setPersons(persons => persons.concat(initialPersons))
     })
       // console.log("seteando las personas");
-  }, [])
-
+  },[])
   /**
   // Con fetch...
   useEffect (() => {
@@ -89,7 +92,7 @@ const App = () => {
   //TODO: Aplicar una lógica de filtros en donde se tenga en cuenta que los caracteres introducidos puedan estar
   //      en cualquier posición dentro del array.name. Ya que en esta solución tiene encuenta el que el string
   //      coincida exactamente con una parte del array.name. Ej : pera --> er, per, pe, era, ra, etc..
-
+  
   const handleFilterChange = (event) => {
     setFilter(event.target.value)
     //console.log(event.target.value);
@@ -117,24 +120,37 @@ const App = () => {
       return person.name === newName
     })
     //console.log(yes);
-    if (yes) {
-      alert(`${personToAdd.name} is already added to phonebook`)
+    if (yes && newNumber !=="") {
+      //TODO: lógica actualizar numero
+      const yes =window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if (yes){
+        const id = persons.find(person => person.name === newName)
+        //console.log(id);
+        updatePerson( id, newNumber)
+        .then(returnedPerson => {
+          //console.log("returnedPerson", returnedPerson)
+          setPersons(persons.map(person => person.id !== id.id ? person : returnedPerson))
+          setFilteredPersons(persons.map(person => person.id !== id.id ? person : returnedPerson))
+          //console.log("persons", persons);
+          //console.log("filteredPersons", filteredPersons);
+        })
+      }
     } else if (newName === "" || newNumber ==="") {
       if (newName ==="") {
         alert("The name can't be empty")
-      } else {
+      } else if (newNumber ===""){
         alert("The number can't be empty")
       }
-
     } else {
       addPerson(personToAdd)
         .then(returnedPerson => {
-         //console.log("returnedPerson: ",returnedPerson);
+         // console.log("returnedPerson: ",returnedPerson);
          setPersons(persons.concat(returnedPerson))
          setFilteredPersons(persons.concat(returnedPerson))
         })      
     }
     //console.log("person despues del add: ",persons);
+    //console.log("filteredPersons despues del add: ",filteredPersons);
     setNewName("")
     setNewNumber("")
     
@@ -185,8 +201,8 @@ const App = () => {
         <PersonForm handleSubmit={handleSubmit} handleNameChange={handleNameChange} newName={newName}
                     handleNumberChange={handleNumberChange} newNumber={newNumber}/>
       <h2>Numbers</h2>
-        <Persons filteredPersons={filteredPersons} persons={persons} contenido={filteredPersons.length} 
-        filter={filter} handleButton={handleButton}/>
+        <Persons filteredPersons={filteredPersons} persons={persons} contenido={filteredPersons.length} filter={filter}
+                  handleButton={handleButton}/>
     </div>
   )
 
