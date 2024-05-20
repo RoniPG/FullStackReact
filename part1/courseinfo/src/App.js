@@ -3,14 +3,22 @@ import { useEffect, useState } from 'react'
 import { addPerson, deletePerson, getAll, updatePerson } from './services/serverController'
 
 const Notification = (props) => {
-  if (props.errorMessage === null || props.errorMessage ==="") {
+  if (props.message === null || props.message ==="") {
     return null
   }
+  if (props.error) {
   return (
     <div className='error'>
-      {props.errorMessage}
+      {props.message}
     </div>
   )
+  }
+  return (
+    <div className='notError'>
+    {props.message}
+    </div>
+  )
+  
 }
 const Filter = (props) => {
   return (
@@ -73,7 +81,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
-  const[errorMessage, setErrorMessage] = useState("")
+  const[message, setMessage] = useState("")
+  const[isErrorMessage, setErrorMessage] = useState(false)
   // console.log("Valor de persons" , persons);
   // console.log("Valor de filteredPersons" , filteredPersons);
   
@@ -143,10 +152,19 @@ const App = () => {
           setFilteredPersons(persons.map(person => person.id !== id.id ? person : returnedPerson))
           //console.log("persons", persons);
           //console.log("filteredPersons", filteredPersons);
-          setErrorMessage(`Number of ${newName} updated succesfully`)
+          setMessage(`Number of ${newName} updated succesfully`)
           setTimeout(() => {
-            setErrorMessage(null)
+            setMessage(null)
           }, 5000)
+        })
+        .catch(error => {
+          setMessage(`Information of ${newName} has already been removed from server`)
+          setErrorMessage(true)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== id.id))
+          setFilteredPersons(filteredPersons.filter(person => person.id !== id.id))
         })
       }
     } else if (newName === "" || newNumber ==="") {
@@ -161,9 +179,9 @@ const App = () => {
          // console.log("returnedPerson: ",returnedPerson);
          setPersons(persons.concat(returnedPerson))
          setFilteredPersons(persons.concat(returnedPerson))
-         setErrorMessage(`Added Name: ${newName}, with number: ${newNumber}, succesfully`)
+         setMessage(`Added Name: ${newName}, with number: ${newNumber}, succesfully`)
           setTimeout(() => {
-            setErrorMessage(null)
+            setMessage(null)
           }, 5000)
         })      
     }
@@ -200,9 +218,9 @@ const App = () => {
       //console.log("initialPersons", initialPersons);
       setFilteredPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
       setPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
-      setErrorMessage(`Deleted name: ${personName.name}, with number: ${personName.number}, succesfully`)
+      setMessage(`Deleted name: ${personName.name}, with number: ${personName.number}, succesfully`)
           setTimeout(() => {
-            setErrorMessage(null)
+            setMessage(null)
           }, 5000)
     })
     }
@@ -217,7 +235,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Notification errorMessage={errorMessage}/>
+        <Notification message={message} error={isErrorMessage}/>
         <Filter handleSubmit={handleSubmit} handleFilterChange={handleFilterChange} filter={filter}/>
       <h2>add a new</h2>
         <PersonForm handleSubmit={handleSubmit} handleNameChange={handleNameChange} newName={newName}
