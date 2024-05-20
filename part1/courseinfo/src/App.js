@@ -19,7 +19,11 @@ const App = () => {
   return (
     <div>
     <p>find countries <input value={value} onChange={handleChange}></input></p>
-    {}
+    {countries.map(country => {
+      <div>
+        
+      </div>
+    })}
     </div>
   )
 }
