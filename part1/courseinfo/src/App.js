@@ -1,8 +1,17 @@
 
 import { useEffect, useState } from 'react'
 import { addPerson, deletePerson, getAll, updatePerson } from './services/serverController'
-import axios, { Axios } from 'axios'
 
+const Notification = (props) => {
+  if (props.errorMessage === null || props.errorMessage ==="") {
+    return null
+  }
+  return (
+    <div className='error'>
+      {props.errorMessage}
+    </div>
+  )
+}
 const Filter = (props) => {
   return (
     <form onSubmit={props.handleSubmit}>
@@ -64,6 +73,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
   const[filteredPersons, setFilteredPersons] = useState([...persons]) // ---> No me queda claro que sea correcto esta línea
+  const[errorMessage, setErrorMessage] = useState("")
   // console.log("Valor de persons" , persons);
   // console.log("Valor de filteredPersons" , filteredPersons);
   
@@ -133,6 +143,10 @@ const App = () => {
           setFilteredPersons(persons.map(person => person.id !== id.id ? person : returnedPerson))
           //console.log("persons", persons);
           //console.log("filteredPersons", filteredPersons);
+          setErrorMessage(`Number of ${newName} updated succesfully`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
       }
     } else if (newName === "" || newNumber ==="") {
@@ -147,6 +161,10 @@ const App = () => {
          // console.log("returnedPerson: ",returnedPerson);
          setPersons(persons.concat(returnedPerson))
          setFilteredPersons(persons.concat(returnedPerson))
+         setErrorMessage(`Added Name: ${newName}, with number: ${newNumber}, succesfully`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })      
     }
     //console.log("person despues del add: ",persons);
@@ -182,6 +200,10 @@ const App = () => {
       //console.log("initialPersons", initialPersons);
       setFilteredPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
       setPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
+      setErrorMessage(`Deleted name: ${personName.name}, with number: ${personName.number}, succesfully`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
     })
     }
     // getAll()
@@ -195,7 +217,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+        <Notification errorMessage={errorMessage}/>
         <Filter handleSubmit={handleSubmit} handleFilterChange={handleFilterChange} filter={filter}/>
       <h2>add a new</h2>
         <PersonForm handleSubmit={handleSubmit} handleNameChange={handleNameChange} newName={newName}
