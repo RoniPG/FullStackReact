@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 
-const Countries = ({countries, filteredCountries}) => {
+const Countries = ({filteredCountries, handleClick}) => {
   const languages = filteredCountries.map((country)=> country.languages) 
   if (filteredCountries.length ===0 || filteredCountries.length > 10) {
     return <p>Too many matches, specify another filter</p>
@@ -10,7 +10,9 @@ const Countries = ({countries, filteredCountries}) => {
       filteredCountries.map((country, index) => {
         return (
           <div key={index}>
-        <p>{country.name.common}</p>
+        <p>{country.name.common}
+        <button id={country.name.common} onClick={handleClick}>show</button>
+        </p>
         </div>
         )
       })
@@ -27,7 +29,7 @@ const Countries = ({countries, filteredCountries}) => {
          <Languages languages={languages}/> */}
         { // Sin componente
         Object.values(languages[0])
-        .map(language => <li>{language}</li>)
+        .map(language => <li key={language}>{language}</li>)
         }
       </ul>
       <img alt={filteredCountries[0].flags.alt} src={filteredCountries[0].flags.png}/>
@@ -48,25 +50,30 @@ const Countries = ({countries, filteredCountries}) => {
 //   )
 // }
 const App = () => {
-  console.log("render APP");
+  // console.log("render APP");
 
   const[countries, setCountries]= useState([])
-  const[filter, setFiter]= useState("")
+  const[filter, setFilter]= useState("")
   const[filteredCountries, setfilteredCountries]= useState([...countries])
 
   useEffect(() => {
     axios.get("https://studies.cs.helsinki.fi/restcountries/api/all")
     .then(response => {
-      console.log("response.data: ", response.data);
+      // console.log("response.data: ", response.data);
       setCountries(response.data)
     })
   }, []) 
   const handleChange = (event) =>{
-    setFiter(event.target.value)
+    setFilter(event.target.value)
     const findCountries = countries.filter((country) => 
       country.name.common.toLowerCase().includes(event.target.value.toLowerCase()))
-    console.log(findCountries);
+    // console.log(findCountries);
     setfilteredCountries(findCountries)
+  }
+  const handleClick = (event) => {
+      const id =event.target.id
+      setfilteredCountries(filteredCountries.filter((country)=> country.name.common.toLowerCase()===id.toLowerCase()))
+      setFilter("")
   }
 
   return (
@@ -74,8 +81,8 @@ const App = () => {
       <p>find countries
         <input value={filter} onChange={handleChange}></input>
       </p>
-      {console.log("filteredCountries: ", filteredCountries)}
-      <Countries countries={countries} filteredCountries={filteredCountries}/>
+      {/* {console.log("filteredCountries: ", filteredCountries)} */}
+      <Countries handleClick={handleClick} filteredCountries={filteredCountries}/>
     </div>
   )
 }
