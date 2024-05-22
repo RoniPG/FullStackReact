@@ -1,0 +1,27 @@
+//Root directory
+GET http://localhost:3001/
+
+###
+
+//Info of the Phonebook
+GET http://localhost:3001/info
+
+###
+
+//Inexistent path
+GET http://localhost:3001/perro
+
+###
+
+// All persons of the Phonebook
+GET http://localhost:3001/api/persons
+
+###
+
+// Number of x person
+GET http://localhost:3001/api/persons/1
+
+###
+
+// Number of inexistent person
+GET http://localhost:3001/api/persons/10abc
