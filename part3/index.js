@@ -41,7 +41,6 @@ let persons = [
     app.get('/api/persons/:id', (request, response) => {
     //    console.log(request.params.id);
         const id = Number(request.params.id)
-       
     //    console.log("typeof id", typeof id , id);
         if (!id) {
             return response.status(404).end()
@@ -58,6 +57,21 @@ let persons = [
             return response.status(204).end()
         }
         response.send(values[1])
+    })
+
+    app.delete('/api/persons/:id', (request, response) => {
+        const id = Number(request.params.id)
+        if (!id) {
+            return response.status(404).end()
+        }
+        const person = persons.find(person => person.id === id)
+        if (!person) {
+            return response.status(404).end()
+        }
+        persons = persons.filter(person => person.id !== id)
+        response.status(204).end()
+        // console.log("persons: ", persons);
+        // console.log("newPersons: ", newPersons);
     })
 
 const PORT = 3001
