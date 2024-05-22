@@ -74,6 +74,18 @@ let persons = [
         // console.log("newPersons: ", newPersons);
     })
 
+    app.use(express.json())
+
+    app.post('/api/persons', (request, response) => {
+        console.log("request.body: ", request.body, "\ntypeof request.body: ", typeof request.body);
+        console.log();
+        const person = request.body
+        person[0].id = Math.random() * 10e16
+        console.log("person.id: ", person.id);
+        persons = persons.concat(person)
+        console.log({person});
+        response.status(201).json(person)
+    })
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
