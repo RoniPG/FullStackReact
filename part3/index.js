@@ -78,12 +78,31 @@ let persons = [
 
     app.post('/api/persons', (request, response) => {
         console.log("request.body: ", request.body, "\ntypeof request.body: ", typeof request.body);
-        console.log();
+        // console.log();
         const person = request.body
+        console.log("person[0].name: ", person[0].name);
+        if (!person[0].name){
+            return response.status(400).json({
+                error: "name is missing"
+            })
+        }
+        if (!person[0].number){
+            return response.status(400).json({
+                error: "number is missing"
+            })
+        }
+        const nameFound = persons.filter(p => (p.name === person[0].name))
+        console.log("nameFound : ",nameFound.toString());
+        if (nameFound.toString() !== "") {
+            return response.status(400).json({
+                error: "name must be unique"
+            })
+        }
+        console.log("nameFound: ", nameFound);
         person[0].id = Math.random() * 10e16
-        console.log("person.id: ", person.id);
+        // console.log("person.id: ", person[0].id);
         persons = persons.concat(person)
-        console.log({person});
+        // console.log({person});
         response.status(201).json(person)
     })
 const PORT = 3001
