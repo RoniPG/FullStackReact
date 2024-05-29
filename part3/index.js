@@ -1,6 +1,10 @@
 
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+app.use(express.json())
+app.use(morgan("tiny"))
 
 let persons = [
       {
@@ -74,13 +78,11 @@ let persons = [
         // console.log("newPersons: ", newPersons);
     })
 
-    app.use(express.json())
-
     app.post('/api/persons', (request, response) => {
-        console.log("request.body: ", request.body, "\ntypeof request.body: ", typeof request.body);
+        // console.log("request.body: ", request.body, "\ntypeof request.body: ", typeof request.body);
         // console.log();
         const person = request.body
-        console.log("person[0].name: ", person[0].name);
+        // console.log("person[0].name: ", person[0].name);
         if (!person[0].name){
             return response.status(400).json({
                 error: "name is missing"
@@ -92,13 +94,13 @@ let persons = [
             })
         }
         const nameFound = persons.filter(p => (p.name === person[0].name))
-        console.log("nameFound : ",nameFound.toString());
+        // console.log("nameFound : ",nameFound.toString());
         if (nameFound.toString() !== "") {
             return response.status(400).json({
                 error: "name must be unique"
             })
         }
-        console.log("nameFound: ", nameFound);
+        // console.log("nameFound: ", nameFound);
         person[0].id = Math.random() * 10e16
         // console.log("person.id: ", person[0].id);
         persons = persons.concat(person)
@@ -107,5 +109,5 @@ let persons = [
     })
 const PORT = 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    // console.log(`Server running on port ${PORT}`)
 })
