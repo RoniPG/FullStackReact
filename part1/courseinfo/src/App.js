@@ -209,15 +209,16 @@ const App = () => {
   }
   const handleButton = (event) => {
     // console.log(event.target.id);
-    const personName = persons.find(person => person.id === event.target.id)
+    const personName = persons.find(person => person.id === parseInt(event.target.id))
+    // console.log("personName: ", personName, "typeof personName: ", typeof personName);
     const confirm = window.confirm(`Delete ${personName.name}`)
     if (confirm) {
       deletePerson(`/${event.target.id}`)
       getAll()
       .then(initialPersons => {
-      //console.log("initialPersons", initialPersons);
-      setFilteredPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
-      setPersons(initialPersons.map(person => person.id !== event.target.id ? person : "").filter(person => person !== ""))
+      // console.log("initialPersons", initialPersons);
+      setFilteredPersons(initialPersons.map(person => person.id !== parseInt(event.target.id) ? person : "").filter(person => person !== ""))
+      setPersons(initialPersons.map(person => person.id !== parseInt(event.target.id) ? person : "").filter(person => person !== ""))
       setMessage(`Deleted name: ${personName.name}, with number: ${personName.number}, succesfully`)
           setTimeout(() => {
             setMessage(null)

@@ -1,10 +1,12 @@
 
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
-// app.use(morgan("tiny"))
+app.use(morgan("tiny"))
 
 morgan.token("req-body", (req) => {
     if (req.method === "POST") {
@@ -95,18 +97,19 @@ let persons = [
         // console.log("request.body: ", request.body, "\ntypeof request.body: ", typeof request.body);
         // console.log();
         const person = request.body
-        // console.log("person[0].name: ", person[0].name);
-        if (!person[0].name){
+        // console.log("person: ", person, "\ntypeof person: ", typeof person);
+        // console.log("person.name :", person.name);
+        if (!person.name){
             return response.status(400).json({
                 error: "name is missing"
             })
         }
-        if (!person[0].number){
+        if (!person.number){
             return response.status(400).json({
                 error: "number is missing"
             })
         }
-        const nameFound = persons.filter(p => (p.name === person[0].name))
+        const nameFound = persons.filter(p => (p.name === person.name))
         // console.log("nameFound : ",nameFound.toString());
         if (nameFound.toString() !== "") {
             return response.status(400).json({
@@ -114,7 +117,7 @@ let persons = [
             })
         }
         // console.log("nameFound: ", nameFound);
-        person[0].id = Math.random() * 10e16
+        person.id = Math.random() * 10e16
         // console.log("person.id: ", person[0].id);
         persons = persons.concat(person)
         // console.log({person});
