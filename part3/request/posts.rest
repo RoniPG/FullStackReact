@@ -1,4 +1,17 @@
+//With localhost
 POST http://localhost:3001/api/persons HTTP/1.1
+Content-Type: application/json
+
+[
+      {
+        "name": "Pedro",
+        "number": "1"
+      }
+]
+
+###
+//With backend deployed
+POST http://backend-3n2k.onrender.com/api/persons HTTP/1.1
 Content-Type: application/json
 
 [

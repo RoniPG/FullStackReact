@@ -1,3 +1,5 @@
+//With localhost
+
 //Root directory
 GET http://localhost:3001/
 
@@ -25,3 +27,34 @@ GET http://localhost:3001/api/persons/1
 
 // Number of inexistent person
 GET http://localhost:3001/api/persons/10abc
+
+###
+//With Backend Deployed
+
+//Root directory
+GET https://backend-3n2k.onrender.com/
+
+###
+
+//Info of the Phonebook
+GET https://backend-3n2k.onrender.com/info
+
+###
+
+//Inexistent path
+GET https://backend-3n2k.onrender.com/perro
+
+###
+
+// All persons of the Phonebook
+GET https://backend-3n2k.onrender.com/api/persons
+
+###
+
+// Number of x person
+GET https://backend-3n2k.onrender.com/api/persons/1
+
+###
+
+// Number of inexistent person
+GET https://backend-3n2k.onrender.com/api/persons/10abc
